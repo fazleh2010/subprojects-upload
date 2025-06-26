@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Folder Upload with User Details</title>
+    <title>Folder Upload with Auto-Completion and Dropdowns</title>
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -62,20 +62,6 @@
             background-color: #fafafa;
         }
 
-        .uploads-section {
-            width: 400px;
-            text-align: left;
-        }
-
-        .uploads-section ul {
-            list-style-type: none;
-            padding: 0;
-        }
-
-        .uploads-section li {
-            margin-bottom: 8px;
-        }
-
         button {
             background-color: #2196F3;
             color: white;
@@ -92,16 +78,40 @@
     <h1>Upload a Folder</h1>
 
     <form method="POST" enctype="multipart/form-data" action="/upload_folder">
-        <input type="text" name="fullname" placeholder="Enter your full name" required><br>
-        <input type="email" name="email" placeholder="Enter your email address" required><br>
 
-        <select name="institution" required>
+        <!-- Full Name with Auto-complete -->
+        <input list="nameList" name="fullname" id="fullname" placeholder="Enter your full name" required>
+        <datalist id="nameList">
+            {% for name in names %}
+                <option value="{{ name }}">
+            {% endfor %}
+        </datalist>
+
+        <!-- Email Address as Select Box -->
+        <select name="email" id="email" required>
+            <option value="">Select your email</option>
+            {% for email in emails %}
+                <option value="{{ email }}">{{ email }}</option>
+            {% endfor %}
+            <option value="other">Other (Enter New Email)</option>
+        </select>
+
+        <!-- New Email Input (Hidden Initially) -->
+        <input type="email" name="new_email" id="newEmail" placeholder="Enter new email" style="display:none;">
+
+        <!-- Institution as Select Box -->
+        <select name="institution" id="institution" required>
             <option value="">Select your institution</option>
             {% for institution in institutions %}
                 <option value="{{ institution }}">{{ institution }}</option>
             {% endfor %}
-        </select><br>
+            <option value="other">Other (Enter New Institution)</option>
+        </select>
 
+        <!-- New Institution Input (Hidden Initially) -->
+        <input type="text" name="new_institution" id="newInstitution" placeholder="Enter new institution" style="display:none;">
+
+        <!-- Folder Upload -->
         <label for="folderInput" class="file-input-label">Select Folder</label>
         <input type="file" id="folderInput" name="files[]" webkitdirectory directory multiple style="display: none;" required>
 
@@ -120,11 +130,15 @@
         {% endif %}
     {% endwith %}
 
-
-
     <script>
         const folderInput = document.getElementById('folderInput');
         const fileListDisplay = document.getElementById('fileList');
+
+        const emailSelect = document.getElementById('email');
+        const newEmailInput = document.getElementById('newEmail');
+
+        const institutionSelect = document.getElementById('institution');
+        const newInstitutionInput = document.getElementById('newInstitution');
 
         folderInput.addEventListener('change', function () {
             if (folderInput.files.length > 0) {
@@ -136,6 +150,26 @@
                 fileListDisplay.innerHTML = fileListHTML;
             } else {
                 fileListDisplay.innerHTML = 'No folder selected';
+            }
+        });
+
+        emailSelect.addEventListener('change', function () {
+            if (emailSelect.value === 'other') {
+                newEmailInput.style.display = 'block';
+                newEmailInput.required = true;
+            } else {
+                newEmailInput.style.display = 'none';
+                newEmailInput.required = false;
+            }
+        });
+
+        institutionSelect.addEventListener('change', function () {
+            if (institutionSelect.value === 'other') {
+                newInstitutionInput.style.display = 'block';
+                newInstitutionInput.required = true;
+            } else {
+                newInstitutionInput.style.display = 'none';
+                newInstitutionInput.required = false;
             }
         });
     </script>
