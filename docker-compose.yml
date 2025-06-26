@@ -1,9 +1,8 @@
+version: '3'
 services:
-  web:
+  uploader:
     build: .
     ports:
       - "5000:5000"
     volumes:
-      - .:/app
-      - ./uploads:/app/uploads  # Persist uploads outside the container
-    restart: always
+      - ./uploads:/app/uploads
