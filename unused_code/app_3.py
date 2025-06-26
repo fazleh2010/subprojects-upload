@@ -6,15 +6,11 @@ from werkzeug.utils import secure_filename
 app = Flask(__name__)
 app.secret_key = 'your_secret_key'
 
-# Upload configuration
 UPLOAD_FOLDER = 'uploads'
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-app.config['MAX_CONTENT_LENGTH'] = 2 * 1024 * 1024 * 1024  # 2 GB limit
-
 if not os.path.exists(UPLOAD_FOLDER):
     os.makedirs(UPLOAD_FOLDER)
 
-CSV_FILE = 'users.csv'
+CSV_FILE = '../users.csv'
 
 institutions = ['Europa-Universität Flensburg',
                 'Philipps-University Marburg',
@@ -65,34 +61,41 @@ emails = [
     "Verena.meier@zegk.uni-heidelberg.de"
 ]
 
+
 @app.route('/')
 def index():
     return render_template('upload_folder.html', names=names, emails=emails, institutions=institutions)
 
 @app.route('/upload_folder', methods=['POST'])
 def upload_folder():
+    # Handle name
     name = request.form['name']
     if name == 'other':
         name = request.form.get('new_name')
 
+    # Handle email
     email = request.form['email']
     if email == 'other':
         email = request.form.get('new_email')
 
+    # Handle institution
     institution = request.form['institution']
     if institution == 'other':
         institution = request.form.get('new_institution')
 
+    # Create institution folder if not exists
     institution_folder = os.path.join(UPLOAD_FOLDER, secure_filename(institution))
     if not os.path.exists(institution_folder):
         os.makedirs(institution_folder)
 
+    # Save files
     files = request.files.getlist('files[]')
     for file in files:
         file_path = os.path.join(institution_folder, file.filename)
         os.makedirs(os.path.dirname(file_path), exist_ok=True)
         file.save(file_path)
 
+    # Save user info to CSV
     if not os.path.exists(CSV_FILE):
         with open(CSV_FILE, mode='w', newline='', encoding='utf-8') as f:
             writer = csv.writer(f)
@@ -103,12 +106,6 @@ def upload_folder():
         writer.writerow([name, email, institution])
 
     flash('Folder uploaded successfully!')
-    return redirect(url_for('index'))
-
-# Error handler for large files
-@app.errorhandler(413)
-def request_entity_too_large(error):
-    flash('File is too large. Maximum upload size is 2 GB.')
     return redirect(url_for('index'))
 
 if __name__ == '__main__':
