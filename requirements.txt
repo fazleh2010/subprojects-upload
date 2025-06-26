@@ -1,0 +1,6 @@
+flask
+neo4j
+flask_login
+werkzeug
+beautifulsoup4
+markupsafe

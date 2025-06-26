@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Folder Upload with User Details</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background-color: #f0f2f5;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        form {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            margin-bottom: 40px;
+            width: 400px;
+        }
+
+        input, select, button {
+            width: 90%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        .file-input-label {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-bottom: 20px;
+        }
+
+        .file-input-label:hover {
+            background-color: #45a049;
+        }
+
+        #fileList {
+            max-height: 200px;
+            overflow-y: auto;
+            text-align: left;
+            border: 1px solid #ddd;
+            padding: 10px;
+            border-radius: 5px;
+            background-color: #fafafa;
+        }
+
+        .uploads-section {
+            width: 400px;
+            text-align: left;
+        }
+
+        .uploads-section ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .uploads-section li {
+            margin-bottom: 8px;
+        }
+
+        button {
+            background-color: #2196F3;
+            color: white;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #1976D2;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Upload a Folder</h1>
+
+    <form method="POST" enctype="multipart/form-data" action="/upload_folder">
+        <input type="text" name="fullname" placeholder="Enter your full name" required><br>
+        <input type="email" name="email" placeholder="Enter your email address" required><br>
+
+        <select name="institution" required>
+            <option value="">Select your institution</option>
+            {% for institution in institutions %}
+                <option value="{{ institution }}">{{ institution }}</option>
+            {% endfor %}
+        </select><br>
+
+        <label for="folderInput" class="file-input-label">Select Folder</label>
+        <input type="file" id="folderInput" name="files[]" webkitdirectory directory multiple style="display: none;" required>
+
+        <div id="fileList">No folder selected</div>
+
+        <button type="submit">Upload Folder</button>
+    </form>
+
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <ul>
+                {% for message in messages %}
+                    <li>{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
+
+
+
+    <script>
+        const folderInput = document.getElementById('folderInput');
+        const fileListDisplay = document.getElementById('fileList');
+
+        folderInput.addEventListener('change', function () {
+            if (folderInput.files.length > 0) {
+                let fileListHTML = '<strong>Files to Upload:</strong><ul>';
+                Array.from(folderInput.files).forEach(file => {
+                    fileListHTML += `<li>${file.webkitRelativePath}</li>`;
+                });
+                fileListHTML += '</ul>';
+                fileListDisplay.innerHTML = fileListHTML;
+            } else {
+                fileListDisplay.innerHTML = 'No folder selected';
+            }
+        });
+    </script>
+
+</body>
+</html>
