@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Folder Upload with Confirmation</title>
+    <title>Folder Upload with Auto-Completion and Dropdowns</title>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
         body {
@@ -78,9 +78,9 @@
 
     <h1>Upload your data</h1>
 
-    <form method="POST" enctype="multipart/form-data" action="/upload_folder" onsubmit="checkAndSubmit(event)">
+    <form method="POST" enctype="multipart/form-data" action="/upload_folder">
 
-        <!-- Name -->
+        <!-- Name as Select Box -->
         <select name="name" id="name" required>
             <option value="">Select your full name</option>
             {% for name in names %}
@@ -89,28 +89,31 @@
             <option value="other">Other (Enter your full name)</option>
         </select>
 
+        <!-- New Name Input -->
         <input type="text" name="new_name" id="newName" placeholder="Enter your full name" style="display:none;">
 
-        <!-- Email -->
+        <!-- Email as Select Box -->
         <select name="email" id="email" required>
             <option value="">Select your email</option>
             {% for email in emails %}
                 <option value="{{ email }}">{{ email }}</option>
             {% endfor %}
-            <option value="other">Other (Enter new email)</option>
+            <option value="other">Other (Enter New Email)</option>
         </select>
 
+        <!-- New Email Input -->
         <input type="email" name="new_email" id="newEmail" placeholder="Enter new email" style="display:none;">
 
-        <!-- Institution -->
+        <!-- Institution as Select Box -->
         <select name="institution" id="institution" required>
             <option value="">Select your institution</option>
             {% for institution in institutions %}
                 <option value="{{ institution }}">{{ institution }}</option>
             {% endfor %}
-            <option value="other">Other (Enter new institution)</option>
+            <option value="other">Other (Enter New Institution)</option>
         </select>
 
+        <!-- New Institution Input -->
         <input type="text" name="new_institution" id="newInstitution" placeholder="Enter new institution" style="display:none;">
 
         <!-- Folder Upload -->
@@ -148,7 +151,6 @@
         const institutionSelect = document.getElementById('institution');
         const newInstitutionInput = document.getElementById('newInstitution');
 
-        // Show file list
         folderInput.addEventListener('change', function () {
             if (folderInput.files.length > 0) {
                 let fileListHTML = '<strong>Files to Upload:</strong><ul>';
@@ -162,7 +164,6 @@
             }
         });
 
-        // Show/hide new name field
         nameSelect.addEventListener('change', function () {
             if (nameSelect.value === 'other') {
                 newNameInput.style.display = 'block';
@@ -173,7 +174,6 @@
             }
         });
 
-        // Show/hide new email field
         emailSelect.addEventListener('change', function () {
             if (emailSelect.value === 'other') {
                 newEmailInput.style.display = 'block';
@@ -184,7 +184,6 @@
             }
         });
 
-        // Show/hide new institution field
         institutionSelect.addEventListener('change', function () {
             if (institutionSelect.value === 'other') {
                 newInstitutionInput.style.display = 'block';
@@ -194,51 +193,6 @@
                 newInstitutionInput.required = false;
             }
         });
-
-        // Check folder existence before submitting
-        async function checkAndSubmit(event) {
-            event.preventDefault();
-
-            let name = nameSelect.value === 'other' ? newNameInput.value : nameSelect.value;
-            let institution = institutionSelect.value === 'other' ? newInstitutionInput.value : institutionSelect.value;
-
-            if (!name || !institution) {
-                Swal.fire('Error', 'Please provide both Name and Institution.', 'error');
-                return;
-            }
-
-            try {
-                const response = await fetch('/check_folder', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ name: name, institution: institution })
-                });
-
-                const result = await response.json();
-
-                if (result.exists) {
-                    Swal.fire({
-                        title: 'Folder Already Exists!',
-                        text: 'Do you want to replace the existing folder?',
-                        icon: 'warning',
-                        showCancelButton: true,
-                        confirmButtonColor: '#d33',
-                        cancelButtonColor: '#3085d6',
-                        confirmButtonText: 'Yes, replace it!',
-                        cancelButtonText: 'No, cancel'
-                    }).then((decision) => {
-                        if (decision.isConfirmed) {
-                            event.target.submit();
-                        }
-                    });
-                } else {
-                    event.target.submit();
-                }
-            } catch (error) {
-                console.error('Error checking folder:', error);
-                Swal.fire('Error', 'Something went wrong. Please try again.', 'error');
-            }
-        }
     </script>
 
 </body>

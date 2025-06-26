@@ -2,6 +2,7 @@ import os
 import csv
 from flask import Flask, render_template, request, redirect, flash, url_for
 from werkzeug.utils import secure_filename
+from flask import jsonify
 
 app = Flask(__name__)
 app.secret_key = 'your_secret_key'
@@ -84,12 +85,21 @@ def upload_folder():
         institution = request.form.get('new_institution')
 
     institution_folder = os.path.join(UPLOAD_FOLDER, secure_filename(institution))
-    if not os.path.exists(institution_folder):
-        os.makedirs(institution_folder)
+    user_folder = os.path.join(institution_folder, secure_filename(name.replace(' ', '_')))
+
+    # Check if user's folder exists and replace it if it does
+    if os.path.exists(user_folder):
+        import shutil
+        shutil.rmtree(user_folder)
+        folder_status = 'replaced'
+    else:
+        folder_status = 'uploaded'
+
+    os.makedirs(user_folder, exist_ok=True)
 
     files = request.files.getlist('files[]')
     for file in files:
-        file_path = os.path.join(institution_folder, file.filename)
+        file_path = os.path.join(user_folder, file.filename)
         os.makedirs(os.path.dirname(file_path), exist_ok=True)
         file.save(file_path)
 
@@ -110,6 +120,21 @@ def upload_folder():
 def request_entity_too_large(error):
     flash('File is too large. Maximum upload size is 2 GB.')
     return redirect(url_for('index'))
+
+@app.route('/check_folder', methods=['POST'])
+def check_folder():
+    data = request.json
+    name = data.get('name')
+    institution = data.get('institution')
+
+    institution_folder = os.path.join(UPLOAD_FOLDER, secure_filename(institution))
+    user_folder = os.path.join(institution_folder, secure_filename(name.replace(' ', '_')))
+
+    if os.path.exists(user_folder):
+        return jsonify({'exists': True})
+    else:
+        return jsonify({'exists': False})
+
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=5000, debug=True)
