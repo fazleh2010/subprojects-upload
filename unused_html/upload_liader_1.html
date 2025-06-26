@@ -3,7 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <title>Folder Upload with Auto-Completion and Dropdowns</title>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -127,14 +126,11 @@
 
     {% with messages = get_flashed_messages() %}
         {% if messages %}
-            <script>
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Upload Successful!',
-                    text: '{{ messages[0] }}',
-                    confirmButtonText: 'OK'
-                });
-            </script>
+            <ul>
+                {% for message in messages %}
+                    <li>{{ message }}</li>
+                {% endfor %}
+            </ul>
         {% endif %}
     {% endwith %}
 
