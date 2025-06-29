@@ -20,17 +20,16 @@ mkdir -p /home/username/folder_uploads
 
 ## 3. Run the Docker Container with Volume Mapping
 
-docker run -d -p 5000:5000 -v /absolute/path/on/host/uploads:/app/uploads --name uploader_app folder_uploader
+docker run -d -p 5010:5010 -v /absolute/path/on/host/uploads:/app/uploads --name uploader_app folder_uploader
 
 
 ## Example Command:
-
-docker run -d -p 5000:5000 -v /home/melahi/code/uploads:/app/uploads --name uploader_app folder_uploader
+docker run -d -p 5010:5010 -v /home/melahi/code/uploads:/app/uploads --name uploader_app folder_uploader
 
 
 ## 4. Access the App
 
-http://localhost:5000
+http://localhost:5010
 
 
 # When running the system for upload data inside doocker container. 
