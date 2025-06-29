@@ -15,7 +15,7 @@ app.config['MAX_CONTENT_LENGTH'] = 2 * 1024 * 1024 * 1024  # 2 GB limit
 if not os.path.exists(UPLOAD_FOLDER):
     os.makedirs(UPLOAD_FOLDER)
 
-CSV_FILE = 'users.csv'
+CSV_FILE = '../users.csv'
 
 institutions = ['Europa-Universität Flensburg',
                 'Philipps-University Marburg',
@@ -70,11 +70,6 @@ emails = [
 def index():
     return render_template('upload_folder.html', names=names, emails=emails, institutions=institutions)
 
-@app.route('/subprojects')
-def subprojects():
-    # Same page is served at /subprojects
-    return render_template('upload_folder.html', names=names, emails=emails, institutions=institutions)
-
 @app.route('/upload_folder', methods=['POST'])
 def upload_folder():
     name = request.form['name']
@@ -108,13 +103,11 @@ def upload_folder():
         os.makedirs(os.path.dirname(file_path), exist_ok=True)
         file.save(file_path)
 
-    # Create CSV if it does not exist
     if not os.path.exists(CSV_FILE):
         with open(CSV_FILE, mode='w', newline='', encoding='utf-8') as f:
             writer = csv.writer(f)
             writer.writerow(['Name', 'Email', 'Institution'])
 
-    # Append new user data to CSV
     with open(CSV_FILE, mode='a', newline='', encoding='utf-8') as f:
         writer = csv.writer(f)
         writer.writerow([name, email, institution])
@@ -128,7 +121,6 @@ def request_entity_too_large(error):
     flash('File is too large. Maximum upload size is 2 GB.')
     return redirect(url_for('index'))
 
-# API to check if folder already exists
 @app.route('/check_folder', methods=['POST'])
 def check_folder():
     data = request.json
