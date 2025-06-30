@@ -2,7 +2,7 @@
 IMAGE_NAME=folder_uploader
 CONTAINER_NAME=uploader_app
 HOST_UPLOAD_PATH=$(CURDIR)/uploads
-PORT=5000
+PORT=5010
 
 # Build the Docker image
 build:
@@ -11,7 +11,7 @@ build:
 # Run the container with volume mapping
 run:
 	mkdir -p $(HOST_UPLOAD_PATH)
-	docker run -d -p $(PORT):5000 -v $(HOST_UPLOAD_PATH):/app/uploads --name $(CONTAINER_NAME) $(IMAGE_NAME)
+	docker run -d -p $(PORT):5010 -v $(HOST_UPLOAD_PATH):/app/uploads --name $(CONTAINER_NAME) $(IMAGE_NAME)
 
 # Stop the container
 stop:

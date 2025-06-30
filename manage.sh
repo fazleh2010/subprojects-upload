@@ -10,7 +10,7 @@ case "$1" in
         ;;
     start)
         echo "Starting Docker container..."
-        docker run -d --name $CONTAINER_NAME -p 5000:5000 -v "$(pwd)/uploads:/app/uploads" $IMAGE_NAME
+        docker run -d --name $CONTAINER_NAME -p 5010:5010 -v "$(pwd)/uploads:/app/uploads" $IMAGE_NAME
         ;;
     stop)
         echo "Stopping Docker container..."
