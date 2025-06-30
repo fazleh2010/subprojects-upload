@@ -1,0 +1,1 @@
+Version1.0 :working version with both inside and outside container
