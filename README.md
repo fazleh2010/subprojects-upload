@@ -15,7 +15,14 @@ docker build -t folder_uploader .
 mkdir -p /absolute/path/on/host/uploads
 
 example
-mkdir -p /home/username/folder_uploads
+mkdir -p /home/username/uploads
+
+### Local machine:
+mkdir -p /home/melahi/code/uploads
+
+### Server:
+mkdir -p /data/subprojects-upload/uploads
+
 
 
 ## 3. Run the Docker Container with Volume Mapping
@@ -24,13 +31,22 @@ docker run -d -p 5010:5010 -v /absolute/path/on/host/uploads:/app/uploads --name
 
 
 ## Example Command:
+
+### Local machine:
 docker run -d -p 5010:5010 -v /home/melahi/code/uploads:/app/uploads --name uploader_app folder_uploader
+
+### Server:
+docker run -d -p 5010:5010 -v /data/subprojects-upload/uploads:/app/uploads --name uploader_app folder_uploader
+
+
 
 
 ## 4. Access the App
-
+Local Machine:
 http://localhost:5010
 
+Server:
+http://137.248.186.54:5010/
 
 # When running the system for upload data inside doocker container. 
 
