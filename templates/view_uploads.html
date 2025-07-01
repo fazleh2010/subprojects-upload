@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Uploaded Folders</title>
+</head>
+<body>
+    <h1>Uploaded Folders</h1>
+    <a href="{{ url_for('index') }}">← Back to Upload</a>
+    <ul>
+    {% for entry in upload_data %}
+        <li>
+            <strong>{{ entry.institution }}</strong> / {{ entry.user }}
+            <ul>
+                {% for file in entry.files %}
+                    <li>{{ file }}</li>
+                {% endfor %}
+            </ul>
+        </li>
+    {% endfor %}
+    </ul>
+</body>
+</html>

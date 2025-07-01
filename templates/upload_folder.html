@@ -240,5 +240,32 @@
         }
     </script>
 
+
+    <!-- Add this inside the <body> tag, after the upload form and script blocks -->
+
+<div style="margin-top: 20px;">
+    <a href="{{ url_for('view_uploads') }}" class="view-uploads-link">📁 View Uploaded Folders</a>
+</div>
+
+<style>
+    .view-uploads-link {
+        display: inline-block;
+        text-decoration: none;
+        background-color: #673AB7;
+        color: white;
+        padding: 10px 20px;
+        border-radius: 5px;
+        font-weight: bold;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        transition: background-color 0.3s ease;
+    }
+
+    .view-uploads-link:hover {
+        background-color: #512DA8;
+    }
+</style>
+
+
+
 </body>
 </html>

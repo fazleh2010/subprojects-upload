@@ -144,5 +144,25 @@ def check_folder():
         return jsonify({'exists': False})
 
 
+@app.route('/view_uploads')
+def view_uploads():
+    upload_data = []
+
+    for institution in os.listdir(UPLOAD_FOLDER):
+        institution_path = os.path.join(UPLOAD_FOLDER, institution)
+        if os.path.isdir(institution_path):
+            for user_folder in os.listdir(institution_path):
+                user_path = os.path.join(institution_path, user_folder)
+                if os.path.isdir(user_path):
+                    files = os.listdir(user_path)
+                    upload_data.append({
+                        'institution': institution,
+                        'user': user_folder,
+                        'files': files
+                    })
+
+    return render_template('view_uploads.html', upload_data=upload_data)
+
+
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=5010, debug=True)
