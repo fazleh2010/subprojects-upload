@@ -25,28 +25,30 @@ institutions = ['Europa-Universität Flensburg',
                 'Heidelberg University']
 
 names = ['Albina Kushanashvili',
+         'André Raatzsch',
          'Dezso Mate',
+         'Frank Reuter',
+         'Iulia Karin Patrut',
+         'Kirsten von Hagen',
+         'Klaus-Michael Bogdal'
+         'Magdalena Watrin'
          'Mohammad Fazleh Elahi',
          'Maria Schwab',
-         'Kirsten von Hagen',
-         'Iulia Karin Patrut',
-         'Klaus-Michael Bogdal'
          'Matthias Bauer',
          'Melanie Ulz',
          'Nele Feuring',
          'Peter Bell',
          'Radmila Mladenova',
-         'Frank Reuter',
          'Tanja Penter',
          'Thomas Bohn',
          'Tobias.haberkorn'
-         'Verena Meier',
-         'Magdalena Watrin'
+         'Verena Meier'
          ]
 
 
 emails = [
     "Albina.Kushanashvili@uni-flensburg.de",
+    "andre.raatzsch@uni-marburg.de",
     "Dezso.Mate@uni-flensburg.de",
     "elahim@staff.uni-marburg.de",
     "maria.schwab@uni-flensburg.de",
