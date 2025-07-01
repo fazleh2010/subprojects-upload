@@ -30,8 +30,8 @@ names = ['Albina Kushanashvili',
          'Frank Reuter',
          'Iulia Karin Patrut',
          'Kirsten von Hagen',
-         'Klaus-Michael Bogdal'
-         'Magdalena Watrin'
+         'Klaus-Michael Bogdal',
+         'Magdalena Watrin',
          'Mohammad Fazleh Elahi',
          'Maria Schwab',
          'Matthias Bauer',
@@ -41,7 +41,7 @@ names = ['Albina Kushanashvili',
          'Radmila Mladenova',
          'Tanja Penter',
          'Thomas Bohn',
-         'Tobias.haberkorn'
+         'Tobias.haberkorn',
          'Verena Meier'
          ]
 
