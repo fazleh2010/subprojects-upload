@@ -1,5 +1,6 @@
 import os
 import csv
+import tempfile
 from flask import Flask, render_template, request, redirect, flash, url_for
 from werkzeug.utils import secure_filename
 from flask import jsonify
@@ -7,10 +8,13 @@ from flask import jsonify
 app = Flask(__name__)
 app.secret_key = 'your_secret_key'
 
+
 # Upload configuration
 UPLOAD_FOLDER = 'uploads'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['MAX_CONTENT_LENGTH'] = 2 * 1024 * 1024 * 1024  # 2 GB limit
+tempfile.tempdir = "tmp"
+
 
 if not os.path.exists(UPLOAD_FOLDER):
     os.makedirs(UPLOAD_FOLDER)
