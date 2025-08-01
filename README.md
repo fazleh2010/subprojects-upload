@@ -55,16 +55,24 @@ chmod +x manage.sh
 
 ## 2. run command
 ./manage.sh stop       # Stop the container
+
 ./manage.sh build      # Build the image
+
 ./manage.sh start      # Start the container
 
 ## 3. all options command
 ./manage.sh build      # Build the image
+
 ./manage.sh start      # Start the container
+
 ./manage.sh stop       # Stop the container
+
 ./manage.sh remove     # Remove the container
+
 ./manage.sh logs       # Show logs
+
 ./manage.sh restart    # Restart the container
+
 ./manage.sh status     # Check if running
 
 ## 4. Access the App

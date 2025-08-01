@@ -2,7 +2,6 @@
 IMAGE_NAME=folder_uploader
 CONTAINER_NAME=uploader_app
 HOST_UPLOAD_PATH=$(CURDIR)/uploads
-HOST_TMP_PATH=$(CURDIR)/tmp
 PORT=5010
 
 # Build the Docker image
@@ -12,13 +11,7 @@ build:
 # Run the container with volume mapping
 run:
 	mkdir -p $(HOST_UPLOAD_PATH)
-	mkdir -p $(HOST_TMP_PATH)
-	docker run -d \
-		-p $(PORT):5010 \
-		-v $(HOST_UPLOAD_PATH):/app/uploads \
-		-v $(HOST_TMP_PATH):/app/tmp \
-		-e TMPDIR=/app/tmp \
-		--name $(CONTAINER_NAME) $(IMAGE_NAME)
+	docker run -d -p $(PORT):5010 -v $(HOST_UPLOAD_PATH):/app/uploads --name $(CONTAINER_NAME) $(IMAGE_NAME)
 
 # Stop the container
 stop:
@@ -40,7 +33,6 @@ logs:
 clean: stop remove
 	docker rmi $(IMAGE_NAME)
 	rm -rf $(HOST_UPLOAD_PATH)
-	rm -rf $(HOST_TMP_PATH)
 
 # Help
 help:
@@ -51,5 +43,5 @@ help:
 	@echo "  make start    - Start the container"
 	@echo "  make remove   - Remove the container"
 	@echo "  make logs     - Show container logs"
-	@echo "  make clean    - Stop, remove container, delete image and uploads/tmp folders"
+	@echo "  make clean    - Stop, remove container, delete image and uploads folder"
 

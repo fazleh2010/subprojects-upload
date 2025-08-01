@@ -1,45 +1,54 @@
 import os
-import tempfile
-
-# Set temp directory early for file uploads
-custom_tmp = os.environ.get("TMPDIR", "/app/tmp")  # Use Docker's env TMPDIR or fallback
-tempfile.tempdir = custom_tmp
-os.makedirs(tempfile.tempdir, exist_ok=True)
-
 import csv
-from flask import Flask, render_template, request, redirect, flash, url_for, jsonify
+import tempfile
+from flask import Flask, render_template, request, redirect, flash, url_for
 from werkzeug.utils import secure_filename
+from flask import jsonify
 
 app = Flask(__name__)
 app.secret_key = 'your_secret_key'
+
 
 # Upload configuration
 UPLOAD_FOLDER = 'uploads'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['MAX_CONTENT_LENGTH'] = 2 * 1024 * 1024 * 1024  # 2 GB limit
+tempfile.tempdir = "tmp"
+
 
 if not os.path.exists(UPLOAD_FOLDER):
     os.makedirs(UPLOAD_FOLDER)
 
 CSV_FILE = 'users.csv'
 
-institutions = [
-    'Europa-Universität Flensburg',
-    'Philipps-University Marburg',
-    'Universität Gießen',
-    'Universität Bielefeld',
-    'Osnabrück University',
-    'Heidelberg University'
-]
+institutions = ['Europa-Universität Flensburg',
+                'Philipps-University Marburg',
+                'Universität Gießen',
+                'Universität Bielefeld',
+                'Osnabrück University',
+                'Heidelberg University']
 
-names = [
-    'Albina Kushanashvili', 'André Raatzsch', 'Dezso Mate', 'Frank Reuter',
-    'Iulia Karin Patrut', 'Kirsten von Hagen', 'Klaus-Michael Bogdal',
-    'Magdalena Watrin', 'Mohammad Fazleh Elahi', 'Maria Schwab',
-    'Matthias Bauer', 'Melanie Ulz', 'Nele Feuring', 'Peter Bell',
-    'Radmila Mladenova', 'Tanja Penter', 'Thomas Bohn',
-    'Tobias.haberkorn', 'Verena Meier'
-]
+names = ['Albina Kushanashvili',
+         'André Raatzsch',
+         'Dezso Mate',
+         'Frank Reuter',
+         'Iulia Karin Patrut',
+         'Kirsten von Hagen',
+         'Klaus-Michael Bogdal',
+         'Magdalena Watrin',
+         'Mohammad Fazleh Elahi',
+         'Maria Schwab',
+         'Matthias Bauer',
+         'Melanie Ulz',
+         'Nele Feuring',
+         'Peter Bell',
+         'Radmila Mladenova',
+         'Tanja Penter',
+         'Thomas Bohn',
+         'Tobias.haberkorn',
+         'Verena Meier'
+         ]
+
 
 emails = [
     "Albina.Kushanashvili@uni-flensburg.de",
@@ -69,6 +78,7 @@ def index():
 
 @app.route('/subprojects')
 def subprojects():
+    # Same page is served at /subprojects
     return render_template('upload_folder.html', names=names, emails=emails, institutions=institutions)
 
 @app.route('/upload_folder', methods=['POST'])
@@ -88,6 +98,7 @@ def upload_folder():
     institution_folder = os.path.join(UPLOAD_FOLDER, secure_filename(institution))
     user_folder = os.path.join(institution_folder, secure_filename(name.replace(' ', '_')))
 
+    # Check if user's folder exists and replace it if it does
     if os.path.exists(user_folder):
         import shutil
         shutil.rmtree(user_folder)
@@ -103,11 +114,13 @@ def upload_folder():
         os.makedirs(os.path.dirname(file_path), exist_ok=True)
         file.save(file_path)
 
+    # Create CSV if it does not exist
     if not os.path.exists(CSV_FILE):
         with open(CSV_FILE, mode='w', newline='', encoding='utf-8') as f:
             writer = csv.writer(f)
             writer.writerow(['Name', 'Email', 'Institution'])
 
+    # Append new user data to CSV
     with open(CSV_FILE, mode='a', newline='', encoding='utf-8') as f:
         writer = csv.writer(f)
         writer.writerow([name, email, institution])
@@ -115,11 +128,13 @@ def upload_folder():
     flash('Folder uploaded successfully!')
     return redirect(url_for('index'))
 
+# Error handler for large files
 @app.errorhandler(413)
 def request_entity_too_large(error):
     flash('File is too large. Maximum upload size is 2 GB.')
     return redirect(url_for('index'))
 
+# API to check if folder already exists
 @app.route('/check_folder', methods=['POST'])
 def check_folder():
     data = request.json
@@ -129,7 +144,11 @@ def check_folder():
     institution_folder = os.path.join(UPLOAD_FOLDER, secure_filename(institution))
     user_folder = os.path.join(institution_folder, secure_filename(name.replace(' ', '_')))
 
-    return jsonify({'exists': os.path.exists(user_folder)})
+    if os.path.exists(user_folder):
+        return jsonify({'exists': True})
+    else:
+        return jsonify({'exists': False})
+
 
 @app.route('/view_uploads')
 def view_uploads():
@@ -149,6 +168,7 @@ def view_uploads():
                     })
 
     return render_template('view_uploads.html', upload_data=upload_data)
+
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=5010, debug=True)
